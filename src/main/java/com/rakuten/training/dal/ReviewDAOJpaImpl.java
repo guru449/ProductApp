@@ -48,7 +48,7 @@ public class ReviewDAOJpaImpl implements ReviewDAO {
 	public List<Review> findByProductId(int pid) {
 		// TODO Auto-generated method stub
 		TypedQuery<Review> q=
-				em.createQuery("select r form REview r where r.product.id=:pid", Review.class);
+				em.createQuery("select r from Review r where r.product.id=:pid", Review.class);
 		q.setParameter("pid", pid);
 		return q.getResultList();
 	}

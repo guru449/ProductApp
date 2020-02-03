@@ -32,6 +32,16 @@ public class Product {
 	float price;
 	@Column(name = "product_qoh")
 	int qoh;
+	@Column(length=500)
+	String image;
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.REMOVE)
 	List<Review> reviews;

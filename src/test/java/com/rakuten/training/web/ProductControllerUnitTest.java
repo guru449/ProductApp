@@ -1,5 +1,6 @@
 package com.rakuten.training.web;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -46,7 +47,7 @@ class ProductControllerUnitTest  {
 		Mockito.when(service.findById(id)).thenReturn(found);
 		//act and assert
 		//mockMvc.perform(MockMvcRequestBuilders.ge)
-		mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}",id))
+		mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}",1))
 		.andExpect(MockMvcResultMatchers.status().isOk())
 		.andExpect(MockMvcResultMatchers.jsonPath("$.id", CoreMatchers.is(id)));
 	}
@@ -54,7 +55,7 @@ class ProductControllerUnitTest  {
 	public void addProduct_Returns_CREATED_With_Value_GT_10000() throws Exception
 	{
 		//arrange
-		Product added = new Product("test", 123.0f, 100);
+		Product added = new Product("test", 1.0f, 0);
 	    int id = 2;
 	    added.setId(id);
 
@@ -94,15 +95,42 @@ class ProductControllerUnitTest  {
 	@Test
 	void deleteProductById_Returns_OK_If_Deleted() throws Exception
 	{
-		Product p=new Product("test",123.0f,100);
+		Product p=new Product("test",123333.0f,100);
 		int id=1;
 		p.setId(id);
-		Mockito.when(service.findById(id)).thenReturn(p);
-		service.removeProduct(id);
-		mockMvc.perform(MockMvcRequestBuilders.get("/products/{id}",id))
-		.andExpect(MockMvcResultMatchers.status().isOk());
-		service.removeProduct(id);
-		Mockito.verify(DAO).deleteById(id);
+		//try {
+		Mockito.doNothing().when(service).removeProduct(id);
+		//service.removeProduct(id);
+		
+		//}
+		//catch(IllegalArgumentException e)
+		//{
+			mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}",id))
+			.andExpect(MockMvcResultMatchers.status().isOk());
+			//service.removeProduct(id);
+			Mockito.verify(service,Mockito.times(1)).removeProduct(id);
+		//}
 	}
+//	@Test
+//	void deleteProductById_Returns_BADREQ_If_NotDeleted() throws Exception
+//	{
+//		Product p=new Product("test",333333.0f,1);
+//		int id=1;
+//		p.setId(id);
+//		//try {
+//		Mockito.doThrow(IllegalArgumentException.class).when(service).removeProduct(id);
+//		//service.removeProduct(id);
+//		
+//		//}
+//		//catch(IllegalArgumentException e)
+//		//{
+//			mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}",id))
+//			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+//			//service.removeProduct(id);
+//			Mockito.verify(service,Mockito.times(1)).removeProduct(id);
+//		//}
+//		
+//	}
+	
 
 }
